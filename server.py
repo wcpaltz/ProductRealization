@@ -19,6 +19,8 @@ log.info("Host: %s" % str(host))
 log.info("Port: %s" % str(port))
 
 serversocket.bind((host, port))
+# Que up to 5 requests
+serversocket.listen(5)
 
 class client(Thread):
     def __init__(self, socket, address):
@@ -48,19 +50,22 @@ class client(Thread):
                 log.info("ACTIVE SHOOTER!")
                 emergency = "activeshooter"
             self.sock.send(("Received data: " + str(emergency)).encode('utf-8'))
-            
+            log.info("Self: " + str(self.sock))
             if(emergency != "No Emergency Inputted"):
                 for client in clients:
+                    if(client == self.sock):
+                        continue
+                    log.info("Client: " + str(client))
                     client.send(("Received data: " + str(emergency)).encode('utf-8'))
-            
-
-# Que up to 5 requests
-serversocket.listen(5)
 
 print ('server started and listening')
 
-while True:
-    clientsocket, address = serversocket.accept()
-    clients.append(clientsocket)
-    client(clientsocket, address)
+try:
+    while True:
+        clientsocket, address = serversocket.accept()
+        clients.append(clientsocket)
+        client(clientsocket, address)
+except KeyboardInterrupt:
+    serversocket.close()
+    
     
