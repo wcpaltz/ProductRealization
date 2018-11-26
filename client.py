@@ -16,19 +16,21 @@ def main():
     while True:
         data = input('Enter Input Below: \n')
         if(data == "quit"):
+            send_data(data)
+            time.sleep(2)
             break
-        send_data(data)
-        time.sleep(1)
-
-    s.close()
+        else:
+            send_data(data)
+            time.sleep(1)
+#    s.close()
 
 def receive_data():
     while True:
         data = s.recv(1024).decode()
-        if(data != ""):
+        if(data == "quit"):
+            print("NEED TO QUIT")
+        else:
             print(str(data))
-#            print("inside receive_data")
-        
     
 if __name__ == '__main__':
     t1 = threading.Thread(target=main, args=[])

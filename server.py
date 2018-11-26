@@ -34,7 +34,9 @@ class client(Thread):
             received_this = str(self.sock.recv(1024).decode())
             log.info('Client sent: ' + str(received_this))
             emergency = "No Emergency Inputted"
-            if(received_this.lower() == "shelter"):
+            if(received_this.lower() == "quit"):
+                emergency = str(received_this)
+            elif(received_this.lower() == "shelter"):
                 log.info("SHELTER!")
                 emergency = "shelter"
             elif(received_this.lower() == "evacuate"):
@@ -49,16 +51,23 @@ class client(Thread):
             elif(received_this.lower() == "activeshooter"):
                 log.info("ACTIVE SHOOTER!")
                 emergency = "activeshooter"
-            self.sock.send(("Received data: " + str(emergency)).encode('utf-8'))
-            log.info("Self: " + str(self.sock))
-            if(emergency != "No Emergency Inputted"):
+            
+            if(emergency == "quit"):
+                client.send((str(emergency)).encode('utf-8'))
+            else:
+                self.sock.send(("Received data: " + str(emergency)).encode('utf-8'))
+                log.info("Self: " + str(self.sock))
+            
+            if(emergency == "quit"):
+                client.send((str(emergency)).encode('utf-8'))
+            elif(emergency != "No Emergency Inputted"):
                 for client in clients:
                     if(client == self.sock):
                         continue
                     log.info("Client: " + str(client))
                     client.send(("Received data: " + str(emergency)).encode('utf-8'))
 
-print ('server started and listening')
+log.info('Server started and listening...')
 
 try:
     while True:
@@ -67,5 +76,3 @@ try:
         client(clientsocket, address)
 except KeyboardInterrupt:
     serversocket.close()
-    
-    
