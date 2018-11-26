@@ -5,6 +5,14 @@ import socket
 from _thread import *
 import threading 
 
+# Other imports
+import logging
+
+# Logging
+log = logging.getLogger(__name__)
+LOGFORMAT = "%(asctime)s | %(levelname)-2s | %(threadName)-2s | %(module)-2s | %(funcName)-2s | %(message)s"
+logging.basicConfig(format=LOGFORMAT, level=logging.DEBUG)
+
 clients = [] # Maintain a list of clients
 
 
@@ -23,27 +31,31 @@ def threaded(c, my_pid):
     Output:
         N/A
     """
-    while True: 
-        # data received from client 
-        data = str(c.recv(1024).decode())
-        
-        # if there is no data, close client and remove
-        # from the clients list, this may populate twice
-        # since the client has technically two threads
-        if not data: 
-            print("pid: [" + str(my_pid) + "] has disconnected") 
-            for client in clients:
-                if(client == c):
-                    clients.remove(client)
-                print("Removed client with pid: " + str(my_pid))
-            break
-        else:
-            # Send alert to entire client base
-            for client in clients:
-                client.send(("Received: " + str(data)).encode('utf-8'))
-  
-    # close connection 
-    c.close() 
+    try:
+        while True: 
+            # data received from client 
+            data = str(c.recv(1024).decode())
+
+            # if there is no data, close client and remove
+            # from the clients list, this may populate twice
+            # since the client has technically two threads
+            if not data: 
+                log.info("pid: [" + str(my_pid) + "] has disconnected") 
+                for client in clients:
+                    if(client == c):
+                        clients.remove(client)
+                    log.info("Removed client with pid: " + str(my_pid))
+                break
+            else:
+                # Send alert to entire client base
+                for client in clients:
+                    client.send(("Received: " + str(data)).encode('utf-8'))
+
+        # close connection 
+        c.close()
+    except:
+        log.warning("Client closed unexpectedly [Shutting Down Client]")
+        c.close()
         
 def Main(): 
     """
@@ -70,18 +82,18 @@ def Main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     
     s.bind((host, port)) # bind the socket to the address
-    print("socket binded to post", port) 
+    log.info("socket binded to port: " + str(port)) 
    
     s.listen(5) # put the socket into listening mode
-    print("socket is listening") 
+    log.info("socket is listening") 
   
     # for loop until client wants to exit 
     while True: 
         c, addr = s.accept() # establish client connection
         
         clients.append(c) # add new client to clients list
-        print("Total Clients Connected: " + str(len(clients)))
-        print('Connected to :', addr[0], ':', addr[1]) 
+        log.info("Total Clients Connected: " + str(len(clients)))
+        log.info("Connected to : " + str(addr[0]) + ":" + str(addr[1])) 
   
         # Start a new thread and return its identifier 
         start_new_thread(threaded, (c, addr[1]))

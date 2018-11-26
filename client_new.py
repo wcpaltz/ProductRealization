@@ -1,10 +1,12 @@
 # Import socket module 
 import socket 
-import time
 
-# import thread module 
+# Import thread module 
 from _thread import *
 import threading 
+
+# Other imports
+import time
 
 def Main():
     """
@@ -77,10 +79,11 @@ def receive_data(s):
 
             # print the received message 
             # here it would be a reverse of sent message 
-            print('\nALERT: Received from the server :',str(data.decode('ascii')))    
+            print("\nALERT: Received from the server " + str(data.decode('ascii')))    
         s.close() # close the connection 
     except:
         # if exception occurs
+#        print("Error with receiving data to client")
         s.close() # close the connection 
 
 if __name__ == '__main__':
