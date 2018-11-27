@@ -14,7 +14,7 @@ LOGFORMAT = "%(asctime)s | %(levelname)-2s | %(threadName)-2s | %(module)-2s | %
 logging.basicConfig(format=LOGFORMAT, level=logging.DEBUG)
 
 clients = [] # Maintain a list of clients
-
+alerts_list = ["lockdown", "lockout", "evacuate", "shelter"]
 
 def threaded(c, my_pid):
     """
@@ -34,23 +34,26 @@ def threaded(c, my_pid):
     try:
         while True: 
             # data received from client 
-            data = str(c.recv(1024).decode())
+            received = str(c.recv(1024).decode())
+            log.info("Received: " + str(received))
 
             # if there is no data, close client and remove
             # from the clients list, this may populate twice
             # since the client has technically two threads
-            if not data: 
+            if not received: 
                 log.info("pid: [" + str(my_pid) + "] has disconnected") 
                 for client in clients:
                     if(client == c):
                         clients.remove(client)
                     log.info("Removed client with pid: " + str(my_pid))
                 break
-            else:
+            elif(received in alerts_list):
                 # Send alert to entire client base
                 for client in clients:
-                    client.send(("Received: " + str(data)).encode('utf-8'))
-
+                    client.send(("Received: " + str(received)).encode('utf-8'))
+            else:
+                c.send(("Received: No Emergency Detected").encode('utf-8'))
+                
         # close connection 
         c.close()
     except:
@@ -74,7 +77,7 @@ def Main():
     #initializing variables
     host = "" 
     global clients
-    
+    global alerts_list
     # reserving port 490000
     # can be whatever port you'd like
     port = 49000

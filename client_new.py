@@ -79,7 +79,7 @@ def receive_data(s):
 
             # print the received message 
             # here it would be a reverse of sent message 
-            print("\nALERT: Received from the server " + str(data.decode('ascii')))    
+            print("\nALERT - " + str(data.decode('ascii')))    
         s.close() # close the connection 
     except:
         # if exception occurs
