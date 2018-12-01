@@ -39,6 +39,7 @@ def lock_out():
     # buttons
     Button(GUIFrame6, text="YES", width=12, command=speak_server_lockout).grid(row=0, column=0)
     Button(GUIFrame6, text="NO", width=12, command=exit).grid(row=0, column=1)
+    
 def are_you_sure_shelter():
     #clear window
     GUIFrame0.grid_remove()
@@ -155,6 +156,7 @@ def active_shooter():
     # add a name
     Label(main, text="                            HELP IS ON THE WAY!                                ").grid(row=0, column=0)
     print("Insert Active Shooter communication here")
+    
 #make gui window
 main=Tk()
 main.title("Intelagis")

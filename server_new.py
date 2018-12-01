@@ -14,7 +14,7 @@ LOGFORMAT = "%(asctime)s | %(levelname)-2s | %(threadName)-2s | %(module)-2s | %
 logging.basicConfig(format=LOGFORMAT, level=logging.DEBUG)
 
 clients = [] # Maintain a list of clients
-alerts_list = ["lockdown", "lockout", "evacuate", "shelter"]
+alerts_list = ["lockdown", "lockout", "evacuate", "shelter", "medical"]
 
 def threaded(c, my_pid):
     """
@@ -50,7 +50,7 @@ def threaded(c, my_pid):
             elif(received in alerts_list):
                 # Send alert to entire client base
                 for client in clients:
-                    client.send(("Received: " + str(received)).encode('utf-8'))
+                    client.send((str(received)).encode('utf-8'))
             else:
                 c.send(("Received: No Emergency Detected").encode('utf-8'))
                 
