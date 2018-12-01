@@ -7,6 +7,84 @@ import threading
 
 # Other imports
 import time
+#from tkinter import *
+from tkinter import *
+    
+# IP (local host)
+# this can be changed
+host = '127.0.0.1'
+
+# Define port that's to be connected to
+port = 49000
+
+gui_count = 0
+s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
+
+# connect to server with local IP
+s.connect((host,port))
+
+def gui_class():
+    def raise_frame(frame, skip):
+        global gui_count
+        gui_count += 1
+        if(gui_count == 3 and skip != "skip"):
+            lockout()
+        print("GUI count: " +str(gui_count))
+        frame.tkraise()
+        
+    root = Tk()
+
+    # main frame
+    f1 = Frame(root)
+    
+    # lockout frames
+    f2, f3, f4, f5 = Frame(root), Frame(root), Frame(root), Frame(root)
+    
+    # shelter frames
+    f6, f7, f8, f9 = Frame(root), Frame(root), Frame(root), Frame(root)
+
+    for frame in (f1, f2, f3, f4, f5, f6):
+        frame.grid(row=0, column=0, sticky='news')
+
+    # Main Screen
+    Label(f1, text='What is your emergency?').pack()
+    Button(f1, text='Lock Out', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f1, text='Shelter in Place', command=lambda:raise_frame(f6, "na")).pack()
+    Button(f1, text='Evacuate', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f1, text='Medical', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f1, text='Lock Down', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f1, text='Active Shooter', command=lambda:raise_frame(f2, "na")).pack()
+    
+    # Verify
+    # Lockout
+    Label(f2, text='Are you sure you want to lock out?').pack()
+    Button(f2, text='Yes', command=lambda:raise_frame(f3, "na")).pack()
+    Button(f2, text='No', command=lambda:raise_frame(f5, "skip")).pack()
+    # Shelter in place
+    Label(f6, text='Are you sure you want to shelter in place?').pack()
+    Button(f6, text='Yes', command=lambda:raise_frame(f3, "na")).pack()
+    Button(f6, text='No', command=lambda:raise_frame(f5, "skip")).pack()
+    
+    
+    # Steps to follow - frame dependent
+    # Lockout
+    Label(f3, text='Please follow the steps below:').pack()
+    Label(f3, text='1.) Bring everyone inside').pack()
+    Label(f3, text='2.) Lock outside door').pack()
+    Label(f3, text='3.) Increase your awareness').pack()
+    Label(f3, text='4.) Take Attendance').pack()
+    Label(f3, text='Are you in your classroom?').pack()
+    Button(f3, text='Yes', command=lambda:raise_frame(f4, "na")).pack()
+    Button(f3, text='No', command=lambda:raise_frame(f4, "na")).pack()
+
+    Label(f4, text='Information has been sent').pack()
+    Button(f4, text='Close App', command=root.destroy).pack()
+    
+    Label(f5, text='No information has been sent').pack()
+    Button(f5, text='Close App', command=root.destroy).pack()
+
+    raise_frame(f1, "na")
+    root.mainloop()
 
 def Main():
     """
@@ -21,19 +99,8 @@ def Main():
     Output:
         N/A
     """
+    gui_class()
     
-    # IP (local host)
-    # this can be changed
-    host = '127.0.0.1'
-  
-    # Define port that's to be connected to
-    port = 49000
-  
-    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
-  
-    # connect to server with local IP
-    s.connect((host,port)) 
-  
     start_new_thread(receive_data, (s,))
     
     while True:
@@ -57,6 +124,30 @@ def Main():
     s.close() # close the connection 
 
 
+def lockout():
+    message = "lockout"
+    s.send(message.encode('ascii'))
+    
+def shelter():
+    message = "shelter"
+    s.send(message.encode('ascii'))
+    
+def evacuate():
+    message = "evacuate"
+    s.send(message.encode('ascii'))
+    
+def medical():
+    message = "medical"
+    s.send(message.encode('ascii'))
+    
+def lockdown():
+    message = "lockdown"
+    s.send(message.encode('ascii'))
+    
+def active():
+    message = "active"
+    s.send(message.encode('ascii'))
+    
 def receive_data(s):
     """
     Functionality:

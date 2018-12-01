@@ -78,7 +78,7 @@ def Main():
     host = "" 
     global clients
     global alerts_list
-    # reserving port 490000
+    # reserving port 49000
     # can be whatever port you'd like
     port = 49000
     
@@ -89,7 +89,7 @@ def Main():
    
     s.listen(5) # put the socket into listening mode
     log.info("socket is listening") 
-  
+    log.info(socket.gethostname())
     # for loop until client wants to exit 
     while True: 
         c, addr = s.accept() # establish client connection
