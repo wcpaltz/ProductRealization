@@ -20,6 +20,31 @@ port = 49000
 gui_count = 0
 received = False
 emergency = "Currently No Emergency Has Been Detected"
+root = Tk()
+current_frame = Frame(root)
+#label_1 = Label(root, text='Emergency').pack()
+
+# main frames
+f1, f2, f3 = Frame(root), Frame(root), Frame(root)
+
+# lockout frames
+f4, f5 = Frame(root), Frame(root)
+
+# shelter frames
+f6, f7 = Frame(root), Frame(root)
+
+# evacuate frames
+f8, f9 = Frame(root), Frame(root)
+
+# medical frames
+f10, f11 = Frame(root), Frame(root)
+v = StringVar()
+
+# lockdown frames
+f12, f13 = Frame(root), Frame(root)
+
+# active shooter frames
+f14, f15 = Frame(root), Frame(root)
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
@@ -28,40 +53,22 @@ s.connect((host,port))
 
 def gui_class():
     global emergency
-
+    global root
+    global f1, f2, f3, f4, f5, f6, f7, f8, f9
+    global f10, f11, f12, f13, f14, f15
+    global current_frame
+    
     def raise_frame(frame, message):
         global gui_count
+        global current_frame
+        current_frame = frame
         gui_count += 1
         print("Message: " + str(message))
         if(message != "skip" and message != "na"):
             send_alert(message)
         print("GUI count: " +str(gui_count))
         frame.tkraise()
-        
-    root = Tk()
 
-    # main frames
-    f1, f2, f3 = Frame(root), Frame(root), Frame(root)
-    
-    # lockout frames
-    f4, f5 = Frame(root), Frame(root)
-    
-    # shelter frames
-    f6, f7 = Frame(root), Frame(root)
-    
-    # evacuate frames
-    f8, f9 = Frame(root), Frame(root)
-    
-    # medical frames
-    f10, f11 = Frame(root), Frame(root)
-    v = StringVar()
-    
-    # lockdown frames
-    f12, f13 = Frame(root), Frame(root)
-    
-    # active shooter frames
-    f14, f15 = Frame(root), Frame(root)
-    
     for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15):
         frame.grid(row=0, column=0, sticky='news')
 
@@ -97,7 +104,7 @@ def gui_class():
     Button(f12, text='No', command=lambda:raise_frame(f3, "skip")).pack()
     # Active Shooter
     Label(f14, text='Are you sure you want to activate active shooter?').pack()
-    Button(f14, text='Yes', command=lambda:raise_frame(f15, "lockdown")).pack()
+    Button(f14, text='Yes', command=lambda:raise_frame(f15, "activeshooter")).pack()
     Button(f14, text='No', command=lambda:raise_frame(f3, "skip")).pack()
     
     # Steps to follow - frame dependent
@@ -144,8 +151,32 @@ def gui_class():
     Button(f3, text='Close App', command=root.destroy).pack()
 
     raise_frame(f1, "na")
+    start_new_thread(update_alert, (root,))
     root.mainloop()
 
+def update_alert(self):
+    global emergency
+    global current_frame
+    old_emergency = emergency
+    old_frame = Frame(self)
+    count = 0
+    label_1 = Label(current_frame, text=(str(emergency)))
+    label_1.pack()
+#    try:
+    while True:
+        if(old_frame != current_frame or old_emergency != emergency):
+#            print("New emergency: " + str(emergency))
+            label_1.pack_forget()
+            label_1 = Label(current_frame, text=(str(emergency)))
+            label_1.pack()
+            old_frame = current_frame
+        old_emergency = emergency
+        time.sleep(0.1)
+    s.close() # close the connection 
+#    except:
+#        # if exception occurs
+#        print("Error with emergency thread")
+#        s.close() # close the connection 
 def Main():
     """
     Functionality:

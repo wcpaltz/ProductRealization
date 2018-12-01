@@ -1,6 +1,7 @@
 # import socket programming library 
 import socket 
-  
+import time
+
 # import thread modules 
 from _thread import *
 import threading 
@@ -14,7 +15,9 @@ LOGFORMAT = "%(asctime)s | %(levelname)-2s | %(threadName)-2s | %(module)-2s | %
 logging.basicConfig(format=LOGFORMAT, level=logging.DEBUG)
 
 clients = [] # Maintain a list of clients
-alerts_list = ["lockdown", "lockout", "evacuate", "shelter", "medical"]
+alerts_list = ["lockdown", "lockout", "evacuate", "shelter", "medical", "activeshooter"]
+current_emergency = "na"
+#received = ""
 
 def threaded(c, my_pid):
     """
@@ -31,6 +34,9 @@ def threaded(c, my_pid):
     Output:
         N/A
     """
+    global current_emergency
+    if(current_emergency != "na"):
+        c.send((str(current_emergency)).encode('utf-8'))
     try:
         while True: 
             # data received from client 
@@ -49,10 +55,12 @@ def threaded(c, my_pid):
                 break
             elif(received in alerts_list):
                 # Send alert to entire client base
+                current_emergency = received
+                log.info("Current Emergency : " + str(current_emergency))
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
             else:
-                c.send(("Received: No Emergency Detected").encode('utf-8'))
+                c.send(("No Emergency Detected").encode('utf-8'))
                 
         # close connection 
         c.close()
@@ -60,6 +68,18 @@ def threaded(c, my_pid):
         log.warning("Client closed unexpectedly [Shutting Down Client]")
         c.close()
         
+#def current_emergency():
+#    global current_emergency
+#    global received
+##    try:
+#    while True:
+#        time.sleep(1)
+#        if(current_emergency != "na"):
+#            for client in clients:
+#                client.send((str(received)).encode('utf-8'))
+##    except:
+##        log.warning("Client closed unexpectedly [Shutting Down Current Emergency notification]")
+
 def Main(): 
     """
     Functionality:
@@ -100,6 +120,7 @@ def Main():
   
         # Start a new thread and return its identifier 
         start_new_thread(threaded, (c, addr[1]))
+#        start_new_thread(current_emergency, ())
     
     # shut down server
     s.close() 
