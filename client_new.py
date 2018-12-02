@@ -5,6 +5,10 @@ import socket
 from _thread import *
 import threading 
 
+# Google Maps
+#from googlemaps import *
+#from keys import google_api_key
+    
 # Other imports
 import time
 #from tkinter import *
@@ -184,7 +188,13 @@ def update_alert(self):
 #    except:
 #        # if exception occurs
 #        print("Error with emergency thread")
-#        s.close() # close the connection 
+#        s.close() # close the connection
+
+#def grab_location():
+#    gmaps = googlemaps.Client(key=google_api_key)
+#    geocode_result = gmaps.geocode('23325')
+#    print(geocode_result)
+    
 def Main():
     """
     Functionality:
@@ -201,6 +211,7 @@ def Main():
     start_new_thread(receive_data, (s,))
     gui_class()
     s.close() # close the connection 
+#    grab_location()
 
 
 def send_alert(message):
