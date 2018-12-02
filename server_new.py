@@ -37,6 +37,7 @@ def threaded(c, my_pid):
     global current_emergency
     if(current_emergency != "na"):
         c.send((str(current_emergency)).encode('utf-8'))
+
     try:
         while True: 
             # data received from client 
@@ -59,8 +60,14 @@ def threaded(c, my_pid):
                 log.info("Current Emergency : " + str(current_emergency))
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
+            elif(received == "reset"):
+                current_emergency = received
+                for client in clients:
+                    client.send((str(received)).encode('utf-8'))
             else:
-                c.send(("No Emergency Detected").encode('utf-8'))
+                # Do Nothing
+                pass
+                
                 
         # close connection 
         c.close()
@@ -68,18 +75,6 @@ def threaded(c, my_pid):
         log.warning("Client closed unexpectedly [Shutting Down Client]")
         c.close()
         
-#def current_emergency():
-#    global current_emergency
-#    global received
-##    try:
-#    while True:
-#        time.sleep(1)
-#        if(current_emergency != "na"):
-#            for client in clients:
-#                client.send((str(received)).encode('utf-8'))
-##    except:
-##        log.warning("Client closed unexpectedly [Shutting Down Current Emergency notification]")
-
 def Main(): 
     """
     Functionality:

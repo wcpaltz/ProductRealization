@@ -17,8 +17,6 @@ host = '127.0.0.1'
 # Define port that's to be connected to
 port = 49000
 
-gui_count = 0
-received = False
 emergency = "Currently No Emergency Has Been Detected"
 root = Tk()
 current_frame = Frame(root)
@@ -44,7 +42,10 @@ v = StringVar()
 f12, f13 = Frame(root), Frame(root)
 
 # active shooter frames
-f14, f15 = Frame(root), Frame(root)
+f14, f15, f16 = Frame(root), Frame(root), Frame(root)
+a = StringVar()
+b = StringVar()
+c = StringVar()
 
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
@@ -59,17 +60,14 @@ def gui_class():
     global current_frame
     
     def raise_frame(frame, message):
-        global gui_count
         global current_frame
         current_frame = frame
-        gui_count += 1
         print("Message: " + str(message))
         if(message != "skip" and message != "na"):
             send_alert(message)
-        print("GUI count: " +str(gui_count))
         frame.tkraise()
 
-    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15):
+    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16):
         frame.grid(row=0, column=0, sticky='news')
 
     # Main Screen
@@ -80,7 +78,7 @@ def gui_class():
     Button(f1, text='Medical', command=lambda:raise_frame(f10, "na")).pack()
     Button(f1, text='Lock Down', command=lambda:raise_frame(f12, "na")).pack()
     Button(f1, text='Active Shooter', command=lambda:raise_frame(f14, "na")).pack()
-    
+    Button(f1, text='Reset App', command=lambda:raise_frame(f1, "reset")).pack()
     # Verify
     # Lockout
     Label(f4, text='Are you sure you want to lock out?').pack()
@@ -139,16 +137,26 @@ def gui_class():
     Button(f13, text='Dangerous Person Inside', command=lambda:raise_frame(f2, "DPI")).pack()
     Button(f13, text='Dangerous Animal Inside', command=lambda:raise_frame(f2, "DAI")).pack()
     # Active Shooter
-    Label(f15, text='Help is on its way!').pack()
-    Button(f15, text='Okay', command=lambda:raise_frame(f2, "na")).pack()
+    Label(f15, text='Where are you?').pack()
+    Label(f15, text='Building:').pack()
+    Entry(f15, textvariable = a).pack()
+    Label(f15, text='Floor:').pack()
+    Entry(f15, textvariable = b).pack()
+    Label(f15, text='Room:').pack()
+    Entry(f15, textvariable = c).pack()
+    Button(f15, text='Submit', command=lambda:raise_frame(f16, str(a.get()) + " " + str(b.get()) + " " + str(c.get()))).pack()
+    Label(f16, text='Help is on its way!').pack()
+    Button(f16, text='Okay', command=lambda:raise_frame(f2, "na")).pack()
     
     # Send information
     Label(f2, text='Information has been sent').pack()
     Button(f2, text='Close App', command=root.destroy).pack()
+    Button(f2, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
     
     # Do not send information
     Label(f3, text='No information has been sent').pack()
     Button(f3, text='Close App', command=root.destroy).pack()
+    Button(f3, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
 
     raise_frame(f1, "na")
     start_new_thread(update_alert, (root,))
@@ -189,30 +197,9 @@ def Main():
         N/A
     Output:
         N/A
-    """
-    global emergency
-    
+    """    
     start_new_thread(receive_data, (s,))
     gui_class()
-    
-#    while True:
-#        # message you received from server 
-#        message = input('Enter Emergency Below: \n')
-#        
-#        # send message to server
-#        s.send(message.encode('ascii')) 
-#
-#        # sleep to receive data from server
-#        # since it is on another thread
-#        time.sleep(1)
-#        
-#        # client want to continue?
-#        ans = input('\nIs the emergency still happening? (y/n) :') 
-#        if ans == 'y': 
-#            continue
-#        else:
-#            break
-            
     s.close() # close the connection 
 
 
@@ -235,10 +222,12 @@ def receive_data(s):
     global emergency
     try:
         while True:
-            # messaga received from server
-            data = s.recv(1024)
-            received = True
-            emergency = "EMERGENCY DETECTED: " + str(data.decode('ascii'))
+            # message received from server
+            data = s.recv(1024) 
+            if(data.decode('ascii') == "reset"):
+                emergency = "Currently No Emergency Has Been Detected"
+            else:
+                emergency = "EMERGENCY DETECTED: " + str(data.decode('ascii'))
             if not data:
                 break
             # print the received message 
