@@ -34,10 +34,14 @@ def threaded(c, my_pid):
     Output:
         N/A
     """
+    emergency_info = []
     global current_emergency
-    if(current_emergency != "na"):
-        c.send((str(current_emergency)).encode('utf-8'))
-
+    try:
+        if(tf_current_emergency()):
+            c.send((str(current_emergency)).encode('utf-8'))
+    except:
+        log.warning("Failed to initialize current emergency on client")
+        
     try:
         while True: 
             # data received from client 
@@ -57,24 +61,35 @@ def threaded(c, my_pid):
             elif(received in alerts_list):
                 # Send alert to entire client base
                 current_emergency = received
+                emergency_info = []
+                emergency_info.append(current_emergency)
                 log.info("Current Emergency : " + str(current_emergency))
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
             elif(received == "reset"):
+                log.info(emergency_info)
+                emergency_info = []
                 current_emergency = received
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
+            elif(received == "send"):
+                log.info("Sending " + str(current_emergency) + " information to dispatch")
+                log.info("Information: " + str(emergency_info))
             else:
-                # Do Nothing
-                pass
-                
-                
+                emergency_info.append(received)
         # close connection 
         c.close()
     except:
         log.warning("Client closed unexpectedly [Shutting Down Client]")
         c.close()
-        
+
+def tf_current_emergency():
+    global current_emergency
+    if(current_emergency in alerts_list):
+        return True
+    else:
+        return False
+    
 def Main(): 
     """
     Functionality:

@@ -30,7 +30,7 @@ current_frame = Frame(root)
 f1, f2, f3 = Frame(root), Frame(root), Frame(root)
 
 # lockout frames
-f4, f5 = Frame(root), Frame(root)
+f4, f5, f19, f20 = Frame(root), Frame(root), Frame(root), Frame(root)
 
 # shelter frames
 f6, f7 = Frame(root), Frame(root)
@@ -39,11 +39,14 @@ f6, f7 = Frame(root), Frame(root)
 f8, f9 = Frame(root), Frame(root)
 
 # medical frames
-f10, f11 = Frame(root), Frame(root)
-v = StringVar()
+f10, f11, f21, f22 = Frame(root), Frame(root), Frame(root), Frame(root)
+d = StringVar()
+e = StringVar()
+f = StringVar()
+g = StringVar()
 
 # lockdown frames
-f12, f13 = Frame(root), Frame(root)
+f12, f13, f17, f18 = Frame(root), Frame(root), Frame(root), Frame(root)
 
 # active shooter frames
 f14, f15, f16 = Frame(root), Frame(root), Frame(root)
@@ -59,8 +62,9 @@ s.connect((host,port))
 def gui_class():
     global emergency
     global root
-    global f1, f2, f3, f4, f5, f6, f7, f8, f9
-    global f10, f11, f12, f13, f14, f15
+    global f1, f2, f3, f4, f5, f6, f7, f8, f9, f10
+    global f11, f12, f13, f14, f15, f16, f17, f18
+    global f19, f20, f21, f22
     global current_frame
     
     def raise_frame(frame, message):
@@ -71,10 +75,12 @@ def gui_class():
             send_alert(message)
         frame.tkraise()
 
-    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16):
+    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22):
         frame.grid(row=0, column=0, sticky='news')
 
-    # Main Screen
+    """""""""""""""""""""""""""""""""""""""""""""
+                    Main Screen
+    """""""""""""""""""""""""""""""""""""""""""""
     Label(f1, text='What is your emergency?').pack()
     Button(f1, text='Lock Out', command=lambda:raise_frame(f4, "na")).pack()
     Button(f1, text='Shelter in Place', command=lambda:raise_frame(f6, "na")).pack()
@@ -83,63 +89,105 @@ def gui_class():
     Button(f1, text='Lock Down', command=lambda:raise_frame(f12, "na")).pack()
     Button(f1, text='Active Shooter', command=lambda:raise_frame(f14, "na")).pack()
     Button(f1, text='Reset App', command=lambda:raise_frame(f1, "reset")).pack()
-    # Verify
+
     # Lockout
     Label(f4, text='Are you sure you want to lock out?').pack()
     Button(f4, text='Yes', command=lambda:raise_frame(f5, "lockout")).pack()
     Button(f4, text='No', command=lambda:raise_frame(f3, "skip")).pack()
+    
     # Shelter in place
     Label(f6, text='Are you sure you want to shelter in place?').pack()
     Button(f6, text='Yes', command=lambda:raise_frame(f7, "shelter")).pack()
     Button(f6, text='No', command=lambda:raise_frame(f3, "skip")).pack()
+    
     # Evacuate
     Label(f8, text='Are you sure you want to evacuate?').pack()
     Button(f8, text='Yes', command=lambda:raise_frame(f9, "evacuate")).pack()
     Button(f8, text='No', command=lambda:raise_frame(f3, "skip")).pack()
+    
     # Medical
     Label(f10, text='Are you sure you want to call medical?').pack()
     Button(f10, text='Yes', command=lambda:raise_frame(f11, "medical")).pack()
     Button(f10, text='No', command=lambda:raise_frame(f3, "skip")).pack() 
+    
     # Lockdown
     Label(f12, text='Are you sure you want to lockdown?').pack()
     Button(f12, text='Yes', command=lambda:raise_frame(f13, "lockdown")).pack()
     Button(f12, text='No', command=lambda:raise_frame(f3, "skip")).pack()
+    
     # Active Shooter
     Label(f14, text='Are you sure you want to activate active shooter?').pack()
     Button(f14, text='Yes', command=lambda:raise_frame(f15, "activeshooter")).pack()
     Button(f14, text='No', command=lambda:raise_frame(f3, "skip")).pack()
+    """""""""""""""""""""""""""""""""""""""""""""
+            END OF MAIN EMERGENCY SCREENS
+    """""""""""""""""""""""""""""""""""""""""""""
     
-    # Steps to follow - frame dependent
+    """""""""""""""""""""""""""""""""""""""""""""
+            Steps to follow - Frame Dependent
+    """""""""""""""""""""""""""""""""""""""""""""
     # Lockout
     Label(f5, text='Please follow the steps below:').pack()
     Label(f5, text='1.) Bring everyone inside').pack()
-    Label(f5, text='2.) Lock outside door').pack()
-    Label(f5, text='3.) Increase your awareness').pack()
-    Label(f5, text='4.) Take Attendance').pack()
+    Label(f5, text='2.) Lock perimeter door').pack()
+    Label(f5, text='3.) Take attendance and report any discrepancies').pack()
+    Label(f5, text='4.) If possible, return to normal classroom activity').pack()
     Label(f5, text='Are you in your classroom?').pack()
-    Button(f5, text='Yes', command=lambda:raise_frame(f2, "na")).pack()
-    Button(f5, text='No', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f5, text='Yes', command=lambda:raise_frame(f19, "Yes - In Classroom")).pack()
+    Button(f5, text='No', command=lambda:raise_frame(f19, "No - Not in Classroom")).pack()
+    Label(f19, text='More detailed report: ').pack()
+    lo_text = Text(f19, height=2, width=30, borderwidth=1, relief="solid")
+    lo_text.pack()
+    Button(f19, text='Next', command=lambda:raise_frame(f20, lo_text.get("1.0",END + "-1c"))).pack()
+    Label(f20, text='Help is on its way!').pack()
+    Button(f20, text='Okay', command=lambda:raise_frame(f2, "send")).pack()   
+    
     # Shelter in place
     Label(f7, text='Reason for shelter in place?').pack()
     Button(f7, text='Tornado', command=lambda:raise_frame(f2, "Tornado")).pack()
     Button(f7, text='Hazmat', command=lambda:raise_frame(f2, "Hazmat")).pack()
     Button(f7, text='Earthquake', command=lambda:raise_frame(f2, "Earthquake")).pack()
     Button(f7, text='Tsunami', command=lambda:raise_frame(f2, "Tsunami")).pack()
+    
     # Evacuate
     Label(f9, text='Please follow the steps below:').pack()
     Label(f9, text='1.) Run').pack()
     Label(f9, text='2.) Keep Running').pack()
     Label(f9, text='3.) Keep Running!').pack()
     Button(f9, text='Okay', command=lambda:raise_frame(f2, "na")).pack()
+    
     # Medical
     Label(f11, text='What is the medical emergency?').pack()
-    Entry(f11, textvariable = v).pack()
-    Button(f11, text='Okay', command=lambda:raise_frame(f2, v.get())).pack()
+    Entry(f11, textvariable = d).pack()
+    Button(f11, text='Okay', command=lambda:raise_frame(f21, d.get())).pack()
+    Label(f21, text='Where are you?').pack()
+    Label(f21, text='Building:').pack()
+    Entry(f21, textvariable = e).pack()
+    Label(f21, text='Floor:').pack()
+    Entry(f21, textvariable = f).pack()
+    Label(f21, text='Room:').pack()
+    Entry(f21, textvariable = g).pack()
+    Button(f21, text='Submit', command=lambda:raise_frame(f22, str("Building:" + e.get()) + " Floor:" + str(f.get()) + " Room:" + str(g.get()))).pack()
+    Label(f22, text='Help is on its way!').pack()
+    Button(f22, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
+    
     # Lockdown
-    Label(f13, text='Reason for Lock Down?').pack()
-    Button(f13, text='Fight', command=lambda:raise_frame(f2, "Fight")).pack()
-    Button(f13, text='Dangerous Person Inside', command=lambda:raise_frame(f2, "DPI")).pack()
-    Button(f13, text='Dangerous Animal Inside', command=lambda:raise_frame(f2, "DAI")).pack()
+    Label(f13, text='Please follow the steps below:').pack()
+    Label(f13, text='1.) Close and lock all doors').pack()
+    Label(f13, text='2.) Turn off the lights').pack()
+    Label(f13, text='3.) Leave the corridor window uncovered').pack()
+    Label(f13, text='4.) Be silent and mute mobile phones').pack()
+    Label(f13, text='5.) Take attendance and report any discrepancies').pack()
+    Label(f13, text='Are you in the classroom?').pack()
+    Button(f13, text='Yes', command=lambda:raise_frame(f17, "Yes - In Classroom")).pack()
+    Button(f13, text='No', command=lambda:raise_frame(f17, "No - Not in Classroom")).pack()
+    Label(f17, text='More detailed report: ').pack()
+    ld_text = Text(f17, height=2, width=30, borderwidth=1, relief="solid")
+    ld_text.pack()
+    Button(f17, text='Next', command=lambda:raise_frame(f18, ld_text.get("1.0",END + "-1c"))).pack()
+    Label(f18, text='Help is on its way!').pack()
+    Button(f18, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
+    
     # Active Shooter
     Label(f15, text='Where are you?').pack()
     Label(f15, text='Building:').pack()
@@ -148,12 +196,19 @@ def gui_class():
     Entry(f15, textvariable = b).pack()
     Label(f15, text='Room:').pack()
     Entry(f15, textvariable = c).pack()
-    Button(f15, text='Submit', command=lambda:raise_frame(f16, str(a.get()) + " " + str(b.get()) + " " + str(c.get()))).pack()
+    Button(f15, text='Submit', command=lambda:raise_frame(f16, str("Building:" + a.get()) + " Floor:" + str(b.get()) + " Room:" + str(c.get()))).pack()
     Label(f16, text='Help is on its way!').pack()
-    Button(f16, text='Okay', command=lambda:raise_frame(f2, "na")).pack()
+    Button(f16, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
+    """""""""""""""""""""""""""""""""""""""""""""
+    END OF FRAMES THAT ARE DEPENDANT ON EMERGENCY
+    """""""""""""""""""""""""""""""""""""""""""""
     
+    """""""""""""""""""""""""""""""""""""""""""""
+                    ENDING FRAMES
+    """""""""""""""""""""""""""""""""""""""""""""
     # Send information
-    Label(f2, text='Information has been sent').pack()
+    Label(f2, text='Thank You').pack()
+    Label(f2, text='Your response has been recorded').pack()
     Button(f2, text='Close App', command=root.destroy).pack()
     Button(f2, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
     
@@ -161,10 +216,14 @@ def gui_class():
     Label(f3, text='No information has been sent').pack()
     Button(f3, text='Close App', command=root.destroy).pack()
     Button(f3, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
-
+    """""""""""""""""""""""""""""""""""""""""""""
+                END OF ENDING FRAMES
+    """""""""""""""""""""""""""""""""""""""""""""
+    
     raise_frame(f1, "na")
     start_new_thread(update_alert, (root,))
     root.mainloop()
+    
 
 def update_alert(self):
     global emergency
@@ -174,21 +233,21 @@ def update_alert(self):
     count = 0
     label_1 = Label(current_frame, text=(str(emergency)))
     label_1.pack()
-#    try:
-    while True:
-        if(old_frame != current_frame or old_emergency != emergency):
-#            print("New emergency: " + str(emergency))
-            label_1.pack_forget()
-            label_1 = Label(current_frame, text=(str(emergency)))
-            label_1.pack()
-            old_frame = current_frame
-        old_emergency = emergency
-        time.sleep(0.1)
-    s.close() # close the connection 
-#    except:
-#        # if exception occurs
-#        print("Error with emergency thread")
-#        s.close() # close the connection
+    try:
+        while True:
+            if(old_frame != current_frame or old_emergency != emergency):
+#                print("New emergency: " + str(emergency))
+                label_1.pack_forget()
+                label_1 = Label(current_frame, text=(str(emergency)))
+                label_1.pack()
+                old_frame = current_frame
+            old_emergency = emergency
+            time.sleep(0.1)
+        s.close() # close the connection 
+    except:
+        # if exception occurs
+        print("Error with emergency thread")
+        s.close() # close the connection
 
 #def grab_location():
 #    gmaps = googlemaps.Client(key=google_api_key)
@@ -242,7 +301,6 @@ def receive_data(s):
             if not data:
                 break
             # print the received message 
-            # here it would be a reverse of sent message 
             print("\nALERT - " + str(data.decode('ascii')))    
         s.close() # close the connection 
     except:
