@@ -33,10 +33,11 @@ f1, f2, f3 = Frame(root), Frame(root), Frame(root)
 f4, f5, f19, f20 = Frame(root), Frame(root), Frame(root), Frame(root)
 
 # shelter frames
-f6, f7 = Frame(root), Frame(root)
+f6, f7, f25, f26 = Frame(root), Frame(root), Frame(root), Frame(root)
 
 # evacuate frames
-f8, f9 = Frame(root), Frame(root)
+f8, f9, f27 = Frame(root), Frame(root), Frame(root)
+h = StringVar()
 
 # medical frames
 f10, f11, f21, f22 = Frame(root), Frame(root), Frame(root), Frame(root)
@@ -49,7 +50,7 @@ g = StringVar()
 f12, f13, f17, f18 = Frame(root), Frame(root), Frame(root), Frame(root)
 
 # active shooter frames
-f14, f15, f16 = Frame(root), Frame(root), Frame(root)
+f14, f15, f16, f23, f24 = Frame(root), Frame(root), Frame(root), Frame(root), Frame(root)
 a = StringVar()
 b = StringVar()
 c = StringVar()
@@ -64,7 +65,7 @@ def gui_class():
     global root
     global f1, f2, f3, f4, f5, f6, f7, f8, f9, f10
     global f11, f12, f13, f14, f15, f16, f17, f18
-    global f19, f20, f21, f22
+    global f19, f20, f21, f22, f23, f24, f25, f26, f27
     global current_frame
     
     def raise_frame(frame, message):
@@ -75,7 +76,7 @@ def gui_class():
             send_alert(message)
         frame.tkraise()
 
-    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22):
+    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26, f27):
         frame.grid(row=0, column=0, sticky='news')
 
     """""""""""""""""""""""""""""""""""""""""""""
@@ -83,7 +84,7 @@ def gui_class():
     """""""""""""""""""""""""""""""""""""""""""""
     Label(f1, text='What is your emergency?').pack()
     Button(f1, text='Lock Out', command=lambda:raise_frame(f4, "na")).pack()
-    Button(f1, text='Shelter in Place', command=lambda:raise_frame(f6, "na")).pack()
+    Button(f1, text='Shelter', command=lambda:raise_frame(f6, "na")).pack()
     Button(f1, text='Evacuate', command=lambda:raise_frame(f8, "na")).pack()
     Button(f1, text='Medical', command=lambda:raise_frame(f10, "na")).pack()
     Button(f1, text='Lock Down', command=lambda:raise_frame(f12, "na")).pack()
@@ -96,7 +97,7 @@ def gui_class():
     Button(f4, text='No', command=lambda:raise_frame(f3, "skip")).pack()
     
     # Shelter in place
-    Label(f6, text='Are you sure you want to shelter in place?').pack()
+    Label(f6, text='Are you sure you want to shelter?').pack()
     Button(f6, text='Yes', command=lambda:raise_frame(f7, "shelter")).pack()
     Button(f6, text='No', command=lambda:raise_frame(f3, "skip")).pack()
     
@@ -117,7 +118,7 @@ def gui_class():
     
     # Active Shooter
     Label(f14, text='Are you sure you want to activate active shooter?').pack()
-    Button(f14, text='Yes', command=lambda:raise_frame(f15, "activeshooter")).pack()
+    Button(f14, text='Yes', command=lambda:raise_frame(f23, "activeshooter")).pack()
     Button(f14, text='No', command=lambda:raise_frame(f3, "skip")).pack()
     """""""""""""""""""""""""""""""""""""""""""""
             END OF MAIN EMERGENCY SCREENS
@@ -128,38 +129,43 @@ def gui_class():
     """""""""""""""""""""""""""""""""""""""""""""
     # Lockout
     Label(f5, text='Please follow the steps below:').pack()
-    Label(f5, text='1.) Bring everyone inside').pack()
-    Label(f5, text='2.) Lock perimeter door').pack()
-    Label(f5, text='3.) Take attendance and report any discrepancies').pack()
-    Label(f5, text='4.) If possible, return to normal classroom activity').pack()
+    Label(f5, text='1.) Bring everyone inside.').pack()
+    Label(f5, text='2.) Lock perimeter door.').pack()
+    Label(f5, text='3.) Take attendance and report any discrepancies.').pack()
+    Label(f5, text='4.) If possible, return to normal classroom activity.').pack()
     Label(f5, text='Are you in your classroom?').pack()
     Button(f5, text='Yes', command=lambda:raise_frame(f19, "Yes - In Classroom")).pack()
     Button(f5, text='No', command=lambda:raise_frame(f19, "No - Not in Classroom")).pack()
     Label(f19, text='More detailed report: ').pack()
     lo_text = Text(f19, height=2, width=30, borderwidth=1, relief="solid")
     lo_text.pack()
-    Button(f19, text='Next', command=lambda:raise_frame(f20, lo_text.get("1.0",END + "-1c"))).pack()
+    Button(f19, text='Next', command=lambda:raise_frame(f20, "Details: " + str(lo_text.get("1.0",END + "-1c")))).pack()
     Label(f20, text='Help is on its way!').pack()
     Button(f20, text='Okay', command=lambda:raise_frame(f2, "send")).pack()   
     
     # Shelter in place
-    Label(f7, text='Reason for shelter in place?').pack()
-    Button(f7, text='Tornado', command=lambda:raise_frame(f2, "Tornado")).pack()
-    Button(f7, text='Hazmat', command=lambda:raise_frame(f2, "Hazmat")).pack()
-    Button(f7, text='Earthquake', command=lambda:raise_frame(f2, "Earthquake")).pack()
-    Button(f7, text='Tsunami', command=lambda:raise_frame(f2, "Tsunami")).pack()
+    Label(f7, text='Please proceed to designated shelter location.').pack()
+    Label(f7, text='Is anyone injured?').pack()
+    Button(f7, text='Yes', command=lambda:raise_frame(f25, "Yes - Injuries")).pack()
+    Button(f7, text='No', command=lambda:raise_frame(f25, "No - No Injuries")).pack()
+    Label(f25, text='More detailed report:').pack()
+    s_text = Text(f25, height=2, width=30, borderwidth=1, relief="solid")
+    s_text.pack()
+    Button(f25, text='Next', command=lambda:raise_frame(f26, "Details: " + str(s_text.get("1.0",END + "-1c")))).pack()
+    Label(f26, text='Stay in shelter location until informed of all clear.').pack()
+    Button(f26, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
     
     # Evacuate
-    Label(f9, text='Please follow the steps below:').pack()
-    Label(f9, text='1.) Run').pack()
-    Label(f9, text='2.) Keep Running').pack()
-    Label(f9, text='3.) Keep Running!').pack()
-    Button(f9, text='Okay', command=lambda:raise_frame(f2, "na")).pack()
+    Label(f9, text='Location to evacuate?').pack()
+    Entry(f9, textvariable = h).pack()
+    Button(f9, text='Submit', command=lambda:raise_frame(f27, str("Location: " + h.get()))).pack()
+    Label(f27, text='Avoid location until informed of all clear.').pack()
+    Button(f27, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
     
     # Medical
     Label(f11, text='What is the medical emergency?').pack()
     Entry(f11, textvariable = d).pack()
-    Button(f11, text='Okay', command=lambda:raise_frame(f21, d.get())).pack()
+    Button(f11, text='Okay', command=lambda:raise_frame(f21, "Details: " + str(d.get()))).pack()
     Label(f21, text='Where are you?').pack()
     Label(f21, text='Building:').pack()
     Entry(f21, textvariable = e).pack()
@@ -173,22 +179,29 @@ def gui_class():
     
     # Lockdown
     Label(f13, text='Please follow the steps below:').pack()
-    Label(f13, text='1.) Close and lock all doors').pack()
-    Label(f13, text='2.) Turn off the lights').pack()
-    Label(f13, text='3.) Leave the corridor window uncovered').pack()
-    Label(f13, text='4.) Be silent and mute mobile phones').pack()
-    Label(f13, text='5.) Take attendance and report any discrepancies').pack()
+    Label(f13, text='1.) Close and lock all doors.').pack()
+    Label(f13, text='2.) Turn off the lights.').pack()
+    Label(f13, text='3.) Leave the corridor window uncovered.').pack()
+    Label(f13, text='4.) Be silent and mute mobile phones.').pack()
+    Label(f13, text='5.) Take attendance and report any discrepancies.').pack()
     Label(f13, text='Are you in the classroom?').pack()
     Button(f13, text='Yes', command=lambda:raise_frame(f17, "Yes - In Classroom")).pack()
     Button(f13, text='No', command=lambda:raise_frame(f17, "No - Not in Classroom")).pack()
-    Label(f17, text='More detailed report: ').pack()
+    Label(f17, text='More detailed report:').pack()
     ld_text = Text(f17, height=2, width=30, borderwidth=1, relief="solid")
     ld_text.pack()
-    Button(f17, text='Next', command=lambda:raise_frame(f18, ld_text.get("1.0",END + "-1c"))).pack()
+    Button(f17, text='Next', command=lambda:raise_frame(f18, "Details: " + str(ld_text.get("1.0",END + "-1c")))).pack()
     Label(f18, text='Help is on its way!').pack()
     Button(f18, text='Okay', command=lambda:raise_frame(f2, "send")).pack()
     
     # Active Shooter
+    Label(f23, text='Is anyone injured?').pack()
+    Button(f23, text='Yes', command=lambda:raise_frame(f24, "Yes - Injuries")).pack()
+    Button(f23, text='No', command=lambda:raise_frame(f24, "No - No Injuries")).pack()
+    Label(f24, text='More detailed report:').pack()
+    ac_text = Text(f24, height=2, width=30, borderwidth=1, relief="solid")
+    ac_text.pack()
+    Button(f24, text='Next', command=lambda:raise_frame(f15, "Details: " + str(ac_text.get("1.0",END + "-1c")))).pack()
     Label(f15, text='Where are you?').pack()
     Label(f15, text='Building:').pack()
     Entry(f15, textvariable = a).pack()
@@ -207,13 +220,13 @@ def gui_class():
                     ENDING FRAMES
     """""""""""""""""""""""""""""""""""""""""""""
     # Send information
-    Label(f2, text='Thank You').pack()
-    Label(f2, text='Your response has been recorded').pack()
+    Label(f2, text='Thank You!').pack()
+    Label(f2, text='Your response has been recorded.').pack()
     Button(f2, text='Close App', command=root.destroy).pack()
     Button(f2, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
     
     # Do not send information
-    Label(f3, text='No information has been sent').pack()
+    Label(f3, text='No information has been sent.').pack()
     Button(f3, text='Close App', command=root.destroy).pack()
     Button(f3, text='Home Screen', command=lambda:raise_frame(f1, "na")).pack()
     """""""""""""""""""""""""""""""""""""""""""""

@@ -62,7 +62,7 @@ def threaded(c, my_pid):
                 # Send alert to entire client base
                 current_emergency = received
                 emergency_info = []
-                emergency_info.append(current_emergency)
+                emergency_info.append("Emergency: " + str(current_emergency))
                 log.info("Current Emergency : " + str(current_emergency))
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
