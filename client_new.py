@@ -96,20 +96,20 @@ def gui_class():
     global current_frame
     
     def raise_frame(frame, message):
-    """
+        """
         Functionality:
-        Needed a simple way to create and manage the frames of the GUI. 
-        This is done by utilizing a current frame architecture and
-        receiving info from frames whenever they are communicated
-        with by the user. Each frame is based in the root of the GUI.
-        Whenever a message is receieved that does not include "skip"
-        or "na" a message will be sent to the server.
-    Input:
-        frame   : Frame
-        message : String
-    Output:
-        N/A
-    """
+            Needed a simple way to create and manage the frames of the GUI. 
+            This is done by utilizing a current frame architecture and
+            receiving info from frames whenever they are communicated
+            with by the user. Each frame is based in the root of the GUI.
+            Whenever a message is receieved that does not include "skip"
+            or "na" a message will be sent to the server.
+        Input:
+            frame   : Frame
+            message : String
+        Output:
+            N/A
+        """
         global current_frame
         current_frame = frame
         if(message != "skip" and message != "na"):

@@ -17,7 +17,6 @@ logging.basicConfig(format=LOGFORMAT, level=logging.DEBUG)
 clients = [] # Maintain a list of clients
 alerts_list = ["lockdown", "lockout", "evacuate", "shelter", "medical", "activeshooter"]
 current_emergency = "na"
-#received = ""
 
 def threaded(c, my_pid):
     """
@@ -39,8 +38,8 @@ def threaded(c, my_pid):
     try:
         if(tf_current_emergency()):
             c.send((str(current_emergency)).encode('utf-8'))
-    except:
-        log.warning("Failed to initialize current emergency on client")
+    except Exception as e:
+        log.warning("Failed to initialize current emergency on client: " + str(e))
         
     try:
         while True: 
@@ -79,11 +78,19 @@ def threaded(c, my_pid):
                 emergency_info.append(received)
         # close connection 
         c.close()
-    except:
-        log.warning("Client closed unexpectedly [Shutting Down Client]")
+    except Exception as e:
+        log.warning("Client closed unexpectedly [Shutting Down Client]: " + str(e))
         c.close()
 
 def tf_current_emergency():
+    """
+    Functionality:
+        Needed a simple way to check if an emergency is currently initiated.
+    Input:
+        N/A
+    Output:
+        N/A
+    """
     global current_emergency
     if(current_emergency in alerts_list):
         return True
@@ -130,7 +137,6 @@ def Main():
   
         # Start a new thread and return its identifier 
         start_new_thread(threaded, (c, addr[1]))
-#        start_new_thread(current_emergency, ())
     
     # shut down server
     s.close() 
