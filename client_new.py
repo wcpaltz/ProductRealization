@@ -1,3 +1,6 @@
+"""""""""""""""""""""""""""""""""""""""""""""
+                Imports
+"""""""""""""""""""""""""""""""""""""""""""""
 # Import socket module 
 import socket 
 
@@ -11,9 +14,9 @@ import os
 import platform
 from tkinter import *
 
-"""
-Define Global Variables
-"""
+"""""""""""""""""""""""""""""""""""""""""""""
+            Define Global Variables
+"""""""""""""""""""""""""""""""""""""""""""""
 #ip_con = "172.20.10.10"
 #host = ip_con
 host = "Wills-MacBook-Pro.local"
@@ -22,8 +25,9 @@ host = "Wills-MacBook-Pro.local"
 port = 49000
 
 emergency = "Currently No Emergency Has Been Detected"
+
+# Create GUI root
 root = Tk()
-#root.geometry("500x300")
 root.resizable(width=False, height=False)
 current_frame = Frame(root)
 frame_array = []
@@ -59,28 +63,60 @@ f23, f24, f25, f26, f27 = Frame(root), Frame(root), Frame(root), Frame(root), Fr
 ac_a, ac_b, ac_c = StringVar(), StringVar(), StringVar()
 frame_array.extend([f23, f24, f25, f26, f27])
 
+# Create socket connection
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
-# connect to server with local IP
-s.connect((host,port))
+try:
+    # connect to server with local IP
+    s.connect((host,port))
+except Exception as e:
+    print("Could not connect to server: " + str(e))
+    exit()
+
+"""""""""""""""""""""""""""""""""""""""""""""
+    Define Global Variables Completed
+"""""""""""""""""""""""""""""""""""""""""""""
 
 def gui_class():
+    """
+    Functionality:
+        Needed a simple way to create a GUI. This function will 
+        create and manage the GUI as the user interacts. The idea
+        of frames is utilized to manage the GUI class. The GUI 
+        communicates with the server to send different types
+        of emergencies.
+    Input:
+        N/A
+    Output:
+        N/A
+    """
     global emergency
     global root
-    global f1, f2, f3, f4, f5, f6, f7, f8, f9, f10
-    global f11, f12, f13, f14, f15, f16, f17, f18
-    global f19, f20, f21, f22, f23, f24, f25, f26, f27
+    global frame_array
     global current_frame
     
     def raise_frame(frame, message):
+    """
+        Functionality:
+        Needed a simple way to create and manage the frames of the GUI. 
+        This is done by utilizing a current frame architecture and
+        receiving info from frames whenever they are communicated
+        with by the user. Each frame is based in the root of the GUI.
+        Whenever a message is receieved that does not include "skip"
+        or "na" a message will be sent to the server.
+    Input:
+        frame   : Frame
+        message : String
+    Output:
+        N/A
+    """
         global current_frame
         current_frame = frame
-        print("Message: " + str(message))
         if(message != "skip" and message != "na"):
             send_alert(message)
         frame.tkraise()
 
-    for frame in (f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12, f13, f14, f15, f16, f17, f18, f19, f20, f21, f22, f23, f24, f25, f26, f27):
+    for frame in frame_array:
         frame.grid(row=0, column=0, sticky='news')
 
     """""""""""""""""""""""""""""""""""""""""""""
@@ -129,7 +165,7 @@ def gui_class():
     """""""""""""""""""""""""""""""""""""""""""""
     
     """""""""""""""""""""""""""""""""""""""""""""
-            Steps to follow - Frame Dependent
+        Steps to follow - Frame Dependent
     """""""""""""""""""""""""""""""""""""""""""""
     # Lockout
     Label(f5, text='Please follow the steps below:').pack()
@@ -244,6 +280,17 @@ def gui_class():
     root.mainloop()
 
 def update_alert(self):
+    """
+    Functionality:
+        Needed a simple way to update the current emergency alert.
+        This is an essential part of the app so that users can
+        be notified, at the bottom of the screen, whenever an emergency
+        is ongoing.
+    Input:
+        self : Tk (Tkinter root)
+    Output:
+        N/A
+    """
     global emergency
     global current_frame
     old_emergency = emergency
@@ -254,7 +301,6 @@ def update_alert(self):
     try:
         while True:
             if(old_frame != current_frame or old_emergency != emergency):
-#                    print("New emergency: " + str(emergency))
                 label_1.pack_forget()
                 label_1 = Label(current_frame, text=(str(emergency)))
                 label_1.pack()
@@ -262,10 +308,10 @@ def update_alert(self):
             old_emergency = emergency
             time.sleep(0.1)
         s.close() # close the connection 
-    except:
+    except Exception as e:
         # if exception occurs
-        print("Error with emergency thread")
-        s.close() # close the connection
+        print("Error with emergency thread: " + str(e))
+        s.close() # close the connection 
 
 #def grab_location():
 #    gmaps = googlemaps.Client(key=google_api_key)
@@ -287,12 +333,23 @@ def Main():
     """
     start_new_thread(receive_data, (s,))
     gui_class()
-    s.close() # close the connection 
-#    grab_location()
-
+    # close the connection
+    s.close()
 
 def send_alert(message):
-    s.send(message.encode('ascii'))
+    """
+    Functionality:
+        Needed a simple way to send an alert to a server that is
+        connected through the connection established.
+    Input:
+        message : String
+    Output:
+        N/A
+    """
+    try:
+        s.send(message.encode('ascii'))
+    except Exception as e:
+        print("Could not send alert to server: " + str(e))
     
 def receive_data(s):
     """
@@ -321,9 +378,9 @@ def receive_data(s):
             # print the received message 
             print("\nALERT - " + str(data.decode('ascii')))    
         s.close() # close the connection 
-    except:
+    except Exception as e:
         # if exception occurs
-#        print("Error with receiving data to client")
+        print("Error receiving data from server: " + str(e))
         s.close() # close the connection 
 
 if __name__ == '__main__':
