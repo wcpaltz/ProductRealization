@@ -1,6 +1,8 @@
-# Project Title
+# Product Realization - Intelaegis
 
-One Paragraph of project description goes here
+The idea of this development project was to deliver a client-server modeled app. The server was created to provide a means of communication between all the clients, similar to a star topology in computer networks. The clients can then communicate to the server with any concerns they may have, which is when the server will choose to distribute those concerns.
+
+All coding was done in python using a couple imports throughout multiple scripts. There are two main scripts, client.py, as well as, server.py. The client.py script is used by school administrators or teachers to establish emergency events that have occurred. Those events include: Lock Out, Shelter in Place, Evacuate, Medical, Lock Down, & Active Shooter. Each event has its own distinct characteristics and asks the client different questions depending on the responses. The server.py script is used to administrate all events any clients shall make. Those actions can include: informing other clients connected to the server that an emergency has occurred, if an all clear has been issued, and current emergency status whether a emergency is happening or not. The server is there to act as a means to distribute valuable information in a timely manner.
 
 ## Getting Started
 
@@ -11,77 +13,48 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 ```
-Give examples
+- Python 3+
+- Terminal Tool
+- 1MB of free space
 ```
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
-
+#### Get server running:
 ```
-Give the example
-```
-
-And repeat
-
-```
-until finished
+git clone "git url"
+cd REPO_FOLDER
+python3 server.py
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+#### Get client running:
+```
+git clone "git url"
+cd REPO_FOLDER
+python3 client.py
+```
 
 ## Running the tests
 
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
+The huge advantage of using Python to write scripts is the ability to test what you code. As progress was made throughout the sprints more and more time was required to be allocated towards testing. By the end of the project almost all of my time was spent testing the scripts. While there was no set test plan throughout the project I did follow some important guidelines. The guidelines are listed below:
 ```
-Give an example
+- Test all new features after every sprint. 
+- Regression test old features as code was changed. 
+- Test as many edge cases as possible. 
+- Make changes accordingly if problems were found. 
 ```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
+In other projects test plan features were required. For example, in Java, jUnit tests were typically required to test the test cases. Test cases, scripts and reports were not mandatory because Python is such an efficient language to script in. 
 
 ## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
-
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+- The python scripts work on both Windows and Mac OS machines.
+- Depending on the server location, the host may need to be changed inside client.py.
+- See below for the diagrams of the system.
 
 ## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+- Will Paltz - wcpaltz@uwm.edu
 
 ## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+- This project is licensed under Tom Dean and Intelaegis.
 
 ## Acknowledgments
-
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
+- Thank you Tom Dean for providing Product Realization with such a cool project! His direction and help was much appreciated!
