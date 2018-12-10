@@ -45,8 +45,10 @@ def threaded(c, my_pid):
         while True: 
             # data received from client 
             received = str(c.recv(1024).decode())
-            log.info("Received: " + str(received))
-
+            user = ""
+            if(received.split(' ', 1)[0] in alerts_list):
+                user = received.split(' ', 1)[1]
+                received = received.split(' ', 1)[0]
             # if there is no data, close client and remove
             # from the clients list, this may populate twice
             # since the client has technically two threads
@@ -63,18 +65,20 @@ def threaded(c, my_pid):
                 current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 emergency_info = []
                 emergency_info.append("Emergency: " + str(current_emergency))
+                emergency_info.append("User: " + str(user))
                 emergency_info.append("Time: " + str(current_time))
-                log.info("Current Emergency : " + str(current_emergency) + " - Current Time: " + str(current_time))
+                log.info("Current Emergency : " + str(current_emergency))
+                log.info("Created by : " + str(user))
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
             elif(received == "reset"):
-#                log.info(emergency_info)
+                log.info("Received reset")
                 emergency_info = []
                 current_emergency = received
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
             elif(received == "send"):
-                log.info("Sending " + str(current_emergency) + " information to dispatch")
+                log.info("Sending " + str(current_emergency) + " information to dispatch.")
                 log.info("Information: " + str(emergency_info))
             else:
                 emergency_info.append(received)

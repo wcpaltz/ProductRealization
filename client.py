@@ -10,17 +10,17 @@ import threading
 
 # Other imports
 import time
-import sys
 import os
 import platform
 from tkinter import *
+import json
 
 """""""""""""""""""""""""""""""""""""""""""""
             Define Global Variables
 """""""""""""""""""""""""""""""""""""""""""""
 #ip_con = "172.20.10.10"
 #host = ip_con
-host = "Wills-MacBook-Pro.local"
+#host = "Wills-MacBook-Pro.local"
 
 # Define port that's to be connected to
 port = 49000
@@ -135,32 +135,32 @@ def gui_class():
 
     # Lockout
     Label(f4, text='Are you sure you want to lock out?').pack()
-    Button(f4, text='Yes', width=6, command=lambda:raise_frame(f5, "lockout")).pack()
+    Button(f4, text='Yes', width=6, command=lambda:raise_frame(f5, "lockout " + read_config("user"))).pack()
     Button(f4, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack()
     
     # Shelter in place
     Label(f8, text='Are you sure you want to shelter?').pack()
-    Button(f8, text='Yes', width=6, command=lambda:raise_frame(f9, "shelter")).pack()
+    Button(f8, text='Yes', width=6, command=lambda:raise_frame(f9, "shelter " + read_config("user"))).pack()
     Button(f8, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack()
     
     # Evacuate
     Label(f12, text='Are you sure you want to evacuate?').pack()
-    Button(f12, text='Yes', width=6, command=lambda:raise_frame(f13, "evacuate")).pack()
+    Button(f12, text='Yes', width=6, command=lambda:raise_frame(f13, "evacuate " + read_config("user"))).pack()
     Button(f12, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack()
     
     # Medical
     Label(f15, text='Are you sure you want to call medical?').pack()
-    Button(f15, text='Yes', width=6, command=lambda:raise_frame(f16, "medical")).pack()
+    Button(f15, text='Yes', width=6, command=lambda:raise_frame(f16, "medical " + read_config("user"))).pack()
     Button(f15, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack() 
     
     # Lockdown
     Label(f19, text='Are you sure you want to lockdown?').pack()
-    Button(f19, text='Yes', width=6, command=lambda:raise_frame(f20, "lockdown")).pack()
+    Button(f19, text='Yes', width=6, command=lambda:raise_frame(f20, "lockdown " + read_config("user"))).pack()
     Button(f19, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack()
     
     # Active Shooter
     Label(f23, text='Are you sure you want to activate active shooter?').pack()
-    Button(f23, text='Yes', width=6, command=lambda:raise_frame(f24, "activeshooter")).pack()
+    Button(f23, text='Yes', width=6, command=lambda:raise_frame(f24, "activeshooter " + read_config("user"))).pack()
     Button(f23, text='No', width=6, command=lambda:raise_frame(f3, "skip")).pack()
     """""""""""""""""""""""""""""""""""""""""""""
             END OF MAIN EMERGENCY SCREENS
@@ -313,10 +313,11 @@ def update_alert(self):
         print("Error with emergency thread: " + str(e))
         s.close() # close the connection 
 
-#def grab_location():
-#    gmaps = googlemaps.Client(key=google_api_key)
-#    geocode_result = gmaps.geocode('23325')
-#    print(geocode_result)
+def read_config(data_to_grab):
+    import json
+    with open("config.json") as json_data_file:
+        data = json.load(json_data_file)
+    return(str(data["server"][data_to_grab]))
     
 def Main():
     """
@@ -331,10 +332,7 @@ def Main():
     Output:
         N/A
     """
-    global host
-    y_or_n = str(input("Would you like to enter a host?"))
-    if(y_or_n.startswith("y")):
-        host = str(input("Enter host info: "))
+    host = read_config("host")
     try:
         # connect to server with local IP
         s.connect((host,port))
@@ -343,6 +341,7 @@ def Main():
         exit()
 
     start_new_thread(receive_data, (s,))
+    root.title("Intelaegis - " + read_config("user"))
     gui_class()
     # close the connection
     s.close()
