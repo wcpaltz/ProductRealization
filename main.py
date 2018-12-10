@@ -1,8 +1,11 @@
 from tkinter import *
-from client_new import main
-#import server_new
+from client import Main as clie
 root = Tk()
 f1 = Frame(root)
+
+# Import thread module 
+from _thread import *
+import threading 
 
 def Main():
     def raise_frame(frame):
@@ -10,10 +13,9 @@ def Main():
     
     f1.grid(row=0, column=0, sticky='news')
         
-    Label(f1, text='Create server or client?').pack()
+    Label(f1, text='Create client instance?').pack()
     Label(f1, text='Only one server can be active at a time').pack()
-    Button(f1, text='Server', command=lambda:server_new.main()).pack()
-    Button(f1, text='Client', command=lambda:client_new.main()).pack()
+    Button(f1, text='Client', command=lambda:start_new_thread(clie())).pack()
     Button(f1, text='Close App', command=root.destroy).pack()
     
     raise_frame(f1)

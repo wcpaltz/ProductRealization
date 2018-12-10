@@ -10,6 +10,7 @@ import threading
 
 # Other imports
 import time
+import sys
 import os
 import platform
 from tkinter import *
@@ -66,15 +67,15 @@ frame_array.extend([f23, f24, f25, f26, f27])
 # Create socket connection
 s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
 
-try:
-    # connect to server with local IP
-    s.connect((host,port))
-except Exception as e:
-    print("Could not connect to server: " + str(e))
-    exit()
+#try:
+#    # connect to server with local IP
+#    s.connect((host,port))
+#except Exception as e:
+#    print("Could not connect to server: " + str(e))
+#    exit()
 
 """""""""""""""""""""""""""""""""""""""""""""
-    Define Global Variables Completed
+    Define Global Variables - Completed
 """""""""""""""""""""""""""""""""""""""""""""
 
 def gui_class():
@@ -116,6 +117,7 @@ def gui_class():
             send_alert(message)
         frame.tkraise()
 
+    
     for frame in frame_array:
         frame.grid(row=0, column=0, sticky='news')
 
@@ -213,8 +215,7 @@ def gui_class():
     Entry(f17, textvariable = med_c).pack()
     Label(f17, text='Room:').pack()
     Entry(f17, textvariable = med_d).pack()
-    med_string = str(("Building:" +  med_b.get()) + " Floor:" + str(med_c.get()) + " Room:" + str(med_d.get()))
-    Button(f17, text='Submit', width=6, command=lambda:raise_frame(f18, str(med_string))).pack()
+    Button(f17, text='Submit', width=6, command=lambda:raise_frame(f18, str("Building:" +  med_b.get() + " Floor:" + str(med_c.get()) + " Room:" + str(med_d.get())))).pack()
     Label(f18, text='Help is on its way!').pack()
     Button(f18, text='Okay', width=6, command=lambda:raise_frame(f2, "send")).pack()
     
@@ -240,7 +241,7 @@ def gui_class():
     Button(f24, text='Yes', width=6, command=lambda:raise_frame(f25, "Yes - Injuries")).pack()
     Button(f24, text='No', width=6, command=lambda:raise_frame(f25, "No - No Injuries")).pack()
     Label(f25, text='More detailed report:').pack()
-    ac_text = Text(f24, height=2, width=30, borderwidth=1, relief="solid")
+    ac_text = Text(f25, height=2, width=30, borderwidth=1, relief="solid")
     ac_text.pack()
     Button(f25, text='Next', width=6, command=lambda:raise_frame(f26, "Details: " + str(ac_text.get("1.0",END + "-1c")))).pack()
     Label(f26, text='Where are you?').pack()
@@ -250,8 +251,7 @@ def gui_class():
     Entry(f26, textvariable = ac_b).pack()
     Label(f26, text='Room:').pack()
     Entry(f26, textvariable = ac_c).pack()
-    ac_string = str(("Building:" +  ac_a.get()) + " Floor:" + str(ac_b.get()) + " Room:" + str(ac_c.get()))
-    Button(f26, text='Submit', width=6, command=lambda:raise_frame(f27, str(ac_string))).pack()
+    Button(f26, text='Submit', width=6, command=lambda:raise_frame(f27, str("Building:" +  ac_a.get() + " Floor:" + str(ac_b.get()) + " Room:" + str(ac_c.get())))).pack()
     Label(f27, text='Help is on its way!').pack()
     Button(f27, text='Okay', width=6, command=lambda:raise_frame(f2, "send")).pack()
     """""""""""""""""""""""""""""""""""""""""""""
@@ -331,6 +331,17 @@ def Main():
     Output:
         N/A
     """
+    global host
+    y_or_n = str(input("Would you like to enter a host?"))
+    if(y_or_n.startswith("y")):
+        host = str(input("Enter host info: "))
+    try:
+        # connect to server with local IP
+        s.connect((host,port))
+    except Exception as e:
+        print("Could not connect to server: " + str(e))
+        exit()
+
     start_new_thread(receive_data, (s,))
     gui_class()
     # close the connection
