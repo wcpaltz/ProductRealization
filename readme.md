@@ -4,6 +4,8 @@ The idea of this development project was to deliver a client-server modeled app.
 
 All coding was done in python using a couple imports throughout multiple scripts. There are two main scripts, client.py, as well as, server.py. The client.py script is used by school administrators or teachers to establish emergency events that have occurred. Those events include: Lock Out, Shelter in Place, Evacuate, Medical, Lock Down, & Active Shooter. Each event has its own distinct characteristics and asks the client different questions depending on the responses. The server.py script is used to administrate all events any clients shall make. Those actions can include: informing other clients connected to the server that an emergency has occurred, if an all clear has been issued, and current emergency status whether a emergency is happening or not. The server is there to act as a means to distribute valuable information in a timely manner.
 
+A configuration file was created in json format to allow for a more robust system. The configuration file can be manipulated to accommodate additions to the client side app. For example: login information or other important data.
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
@@ -16,6 +18,7 @@ What things you need to install the software and how to install them
 - Python 3+
 - Terminal Tool
 - 1MB of free space
+- Configuration file
 ```
 
 ### Installing
