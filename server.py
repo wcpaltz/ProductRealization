@@ -77,10 +77,14 @@ def threaded(c, my_pid):
                 current_emergency = received
                 for client in clients:
                     client.send((str(received)).encode('utf-8'))
+            elif(received == "rpi_sensor"):
+                log.info("Alert - Shot Detected")
+                log.info("Sending information to dispatch")
             elif(received == "send"):
                 log.info("Sending " + str(current_emergency) + " information to dispatch.")
                 log.info("Information: " + str(emergency_info))
             else:
+                log.info("Received: " + str(received))
                 emergency_info.append(received)
         # close connection 
         c.close()
